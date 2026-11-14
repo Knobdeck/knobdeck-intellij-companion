@@ -1,0 +1,42 @@
+<idea-plugin>
+  <id>com.harshalkudale.knobdeck.companion</id>
+  <name>KnobDeck Companion</name>
+  <vendor url="https://knobdeck.harshalkudale.com" email="support@harshalkudale.com">KnobDeck</vendor>
+
+  <description><![CDATA[
+    <p>Lets the <a href="https://knobdeck.harshalkudale.com">KnobDeck</a> dial and deck control your JetBrains IDE:
+    Run and Debug (by configuration name), stepping, Search Everywhere, the terminal, and any IDE action by its ID.</p>
+    <p>Works with IntelliJ IDEA, Android Studio, PyCharm, WebStorm, GoLand, Rider, CLion and the other IntelliJ-based IDEs.</p>
+    <h3>Setup</h3>
+    <ol>
+      <li>Install this plugin. It starts a small action server on <code>127.0.0.1:21420</code>.</li>
+      <li>Optional: set a password in <b>Settings → Tools → KnobDeck</b>.</li>
+      <li>In KnobDeck, install the <b>IntelliJ IDE</b> plugin and enter the same port and password in its setup.</li>
+    </ol>
+    <p>Use <b>Tools → KnobDeck: Copy an Action ID</b> to find IDs for KnobDeck's "Customized Action" button.</p>
+    <p>The server only accepts connections from this computer and refuses requests from web pages. The plugin sends no data anywhere.</p>
+  ]]></description>
+
+  <depends>com.intellij.modules.platform</depends>
+
+  <actions>
+    <action id="KnobDeck.ShowActionBrowser"
+            class="com.harshalkudale.knobdeck.intellij.OpenActionBrowserAction"
+            text="KnobDeck: Copy an Action ID…"
+            description="Find an IDE action ID for KnobDeck's Customized Action button">
+      <add-to-group group-id="ToolsMenu" anchor="last"/>
+    </action>
+  </actions>
+
+  <applicationListeners>
+    <listener class="com.harshalkudale.knobdeck.intellij.StartupListener" topic="com.intellij.ide.AppLifecycleListener"/>
+    <listener class="com.harshalkudale.knobdeck.intellij.StartupListener" topic="com.intellij.ide.plugins.DynamicPluginListener"/>
+  </applicationListeners>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable id="knobdeck.settings"
+                             parentId="tools"
+                             displayName="KnobDeck"
+                             instance="com.harshalkudale.knobdeck.intellij.SettingsConfigurable"/>
+  </extensions>
+</idea-plugin>
