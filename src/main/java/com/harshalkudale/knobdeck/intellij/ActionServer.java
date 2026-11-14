@@ -1,12 +1,11 @@
 package com.harshalkudale.knobdeck.intellij;
 
-import com.intellij.ide.plugins.PluginManagerCore;
+import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.Service;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.extensions.PluginId;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
@@ -142,7 +141,7 @@ public final class ActionServer implements Disposable {
     Map<String, Object> body = new LinkedHashMap<>();
     body.put("ok", true);
     body.put("app", "KnobDeck IntelliJ Companion");
-    var plugin = PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID));
+    var plugin = PluginManager.getPluginByClass(ActionServer.class);
     body.put("version", plugin == null ? "dev" : plugin.getVersion());
     body.put("ide", ApplicationInfo.getInstance().getFullApplicationName());
     body.put("build", ApplicationInfo.getInstance().getBuild().asString());

@@ -8,11 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 /** Starts the action server when the IDE starts, or right away when the plugin is installed. */
 public final class StartupListener implements AppLifecycleListener, DynamicPluginListener {
-  @Override
-  public void appStarted() {
-    ActionServer.getInstance().applySettings();
-  }
-
+  /** Called once at IDE startup, before the first window opens. */
   @Override
   public void appFrameCreated(@NotNull List<String> commandLineArgs) {
     ActionServer.getInstance().applySettings();
