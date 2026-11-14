@@ -44,7 +44,7 @@ intellijPlatform {
   pluginVerification {
     ides {
       create(IntelliJPlatformType.IntellijIdeaCommunity, "2024.3.7")
-      create(IntelliJPlatformType.IntellijIdeaCommunity, "2025.3")
+      create(IntelliJPlatformType.IntellijIdeaCommunity, "2025.3.6")
       create(IntelliJPlatformType.IntellijIdea, "2026.3")
     }
   }
