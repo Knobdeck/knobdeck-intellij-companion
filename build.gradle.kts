@@ -63,6 +63,13 @@ intellijPlatform {
   buildSearchableOptions = false
 }
 
+// /health reports the version from this file, filled in at build time (no IDE API needed).
+tasks.processResources {
+  val v = project.version.toString()
+  inputs.property("version", v)
+  filesMatching("knobdeck-companion.properties") { expand("version" to v) }
+}
+
 tasks.test {
   // The compat test drives the real KnobDeck `intellij` plugin when these are set.
   for (name in listOf("KNOBDECK_INTELLIJ_PLUGIN", "KNOBDECK_INTELLIJ_SETUP")) {

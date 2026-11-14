@@ -88,6 +88,7 @@ public class ActionServerTest extends BasePlatformTestCase {
     HttpResponse<String> r = get("/health");
     assertEquals(200, r.statusCode());
     assertTrue(r.body(), r.body().contains("\"app\":\"KnobDeck IntelliJ Companion\""));
+    assertTrue(r.body(), r.body().contains("\"version\":\"1."));
   }
 
   public void testRunsAnAction() throws Exception {

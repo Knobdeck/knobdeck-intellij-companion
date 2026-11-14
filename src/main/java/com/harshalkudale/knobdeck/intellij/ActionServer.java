@@ -1,6 +1,5 @@
 package com.harshalkudale.knobdeck.intellij;
 
-import com.intellij.ide.plugins.PluginManager;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.application.ApplicationManager;
@@ -30,6 +29,18 @@ public final class ActionServer implements Disposable {
   private static final Logger LOG = Logger.getInstance(ActionServer.class);
   static final String PLUGIN_ID = "com.harshalkudale.knobdeck.companion";
   private static final Set<String> LOOPBACK_HOSTS = Set.of("127.0.0.1", "localhost", "[::1]");
+
+  private static final String VERSION = readVersion();
+
+  private static String readVersion() {
+    try (var in = ActionServer.class.getResourceAsStream("/knobdeck-companion.properties")) {
+      var props = new java.util.Properties();
+      if (in != null) props.load(in);
+      return props.getProperty("version", "dev");
+    } catch (IOException e) {
+      return "dev";
+    }
+  }
 
   private @Nullable HttpServer server;
   private @Nullable ExecutorService executor;
@@ -141,8 +152,7 @@ public final class ActionServer implements Disposable {
     Map<String, Object> body = new LinkedHashMap<>();
     body.put("ok", true);
     body.put("app", "KnobDeck IntelliJ Companion");
-    var plugin = PluginManager.getPluginByClass(ActionServer.class);
-    body.put("version", plugin == null ? "dev" : plugin.getVersion());
+    body.put("version", VERSION);
     body.put("ide", ApplicationInfo.getInstance().getFullApplicationName());
     body.put("build", ApplicationInfo.getInstance().getBuild().asString());
     return body;
