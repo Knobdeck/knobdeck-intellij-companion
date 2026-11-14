@@ -44,7 +44,8 @@ intellijPlatform {
   pluginVerification {
     ides {
       create(IntelliJPlatformType.IntellijIdeaCommunity, "2024.3.7")
-      create(IntelliJPlatformType.IntellijIdeaCommunity, "2025.3.6")
+      // 2025.3 and later ship only as the unified IntelliJ IDEA (no Community build).
+      create(IntelliJPlatformType.IntellijIdea, "2025.3.6")
       create(IntelliJPlatformType.IntellijIdea, "2026.3")
     }
   }
