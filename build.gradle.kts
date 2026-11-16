@@ -78,5 +78,5 @@ tasks.test {
     inputs.property(name, value)
     if (value.isNotEmpty() && file(value).exists()) inputs.file(value).withPropertyName("$name-binary")
   }
-  environment("KNOBDECK_COMPAT_DIR", layout.projectDirectory.dir("../compat").asFile.absolutePath)
+  environment("KNOBDECK_COMPAT_DIR", layout.projectDirectory.dir("test-support/compat").asFile.absolutePath)
 }

@@ -1,0 +1,80 @@
+# Actions → Release → Run workflow (on master) releases pluginVersion from gradle.properties:
+# it runs CI, creates the tag v<version> and a GitHub release with the plugin zip, then signs the
+# plugin and publishes it to JetBrains Marketplace.
+#
+# Marketplace is skipped (with a warning) until its secrets are set; see CONTRIBUTING.md.
+# Re-running for a version that already has a release skips the release and only retries
+# Marketplace.
+name: Release
+
+on:
+  workflow_dispatch:
+
+concurrency: release
+
+jobs:
+  ci:
+    if: github.ref == 'refs/heads/master'
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: ci
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - id: version
+        run: echo "version=$(grep '^pluginVersion=' gradle.properties | cut -d= -f2)" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          name: knobdeck-intellij-companion
+          path: dist
+      - name: Tag and GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          tag="v$VERSION"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            test "$(gh api "repos/$GITHUB_REPOSITORY/commits/$tag" --jq .sha)" = "$GITHUB_SHA" \
+              || { echo "::error::$tag already exists on another commit: bump pluginVersion in gradle.properties"; exit 1; }
+            echo "::notice::$tag is already released; publishing to JetBrains Marketplace only"
+            exit 0
+          fi
+          # The notes are this version's entry in CHANGELOG.html (also the Marketplace change notes).
+          awk -v v="<h3>$VERSION</h3>" '/<h3>/{on = ($0 ~ v)} on' CHANGELOG.html | tail -n +2 > notes.md
+          gh release create "$tag" dist/*.zip --target "$GITHUB_SHA" \
+            --title "KnobDeck Companion for JetBrains IDEs $VERSION" --notes-file notes.md
+
+  marketplace:
+    needs: release
+    runs-on: ubuntu-latest
+    environment: release
+    env:
+      JETBRAINS_MARKETPLACE_TOKEN: ${{ secrets.JETBRAINS_MARKETPLACE_TOKEN }}
+      CERTIFICATE_CHAIN: ${{ secrets.JETBRAINS_CERTIFICATE_CHAIN }}
+      PRIVATE_KEY: ${{ secrets.JETBRAINS_PRIVATE_KEY }}
+      PRIVATE_KEY_PASSWORD: ${{ secrets.JETBRAINS_PRIVATE_KEY_PASSWORD }}
+    steps:
+      - name: Check the store is set up
+        id: setup
+        run: |
+          if [ -n "$JETBRAINS_MARKETPLACE_TOKEN" ] && [ -n "$CERTIFICATE_CHAIN" ] && [ -n "$PRIVATE_KEY" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::JetBrains Marketplace skipped: set JETBRAINS_MARKETPLACE_TOKEN, JETBRAINS_CERTIFICATE_CHAIN, JETBRAINS_PRIVATE_KEY (and JETBRAINS_PRIVATE_KEY_PASSWORD)"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.setup.outputs.ready
+      - uses: actions/setup-java@v4
+        if: steps.setup.outputs.ready
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.setup.outputs.ready
+      - name: Sign and publish
+        if: steps.setup.outputs.ready
+        run: ./gradlew publishPlugin --console=plain

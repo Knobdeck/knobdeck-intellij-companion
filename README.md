@@ -9,7 +9,7 @@ keyboard shortcuts, so its buttons work whatever your keymap is.
 ## Setup
 
 1. Install **KnobDeck Companion** from the JetBrains Marketplace (or **Install Plugin from Disk…**
-   with the zip from the GitHub release). The action server starts right away on `127.0.0.1:21420`.
+   with the zip from a [GitHub release](https://github.com/Knobdeck/knobdeck-intellij-companion/releases)). The action server starts right away on `127.0.0.1:21420`.
 2. Optional: open **Settings → Tools → KnobDeck** to set a password or change the port.
 3. In KnobDeck, install the **IntelliJ IDE** plugin and enter the same port and password in its setup.
 
@@ -34,16 +34,10 @@ action by its ID (**Customized Action**). To find an ID, use **Tools → KnobDec
 ## Privacy and security
 
 The plugin sends nothing anywhere and collects no data. Its server listens only on `127.0.0.1` and
-refuses requests from web pages. See [PRIVACY.md](../PRIVACY.md) and the
+refuses requests from web pages. See [PRIVACY.md](PRIVACY.md) and the
 [KnobDeck privacy policy](https://knobdeck.harshalkudale.com/legal/privacy).
 
 ## Development
 
-```sh
-./gradlew test          # headless IDE tests
-./gradlew runIde        # sandbox IDE with the plugin
-./gradlew buildPlugin   # build/distributions/*.zip
-./gradlew verifyPlugin  # Plugin Verifier: 2024.3, 2025.3, 2026.3
-```
-
-The HTTP interface is in [PROTOCOL.md](../PROTOCOL.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md). This is one of the
+[KnobDeck companions](https://github.com/Knobdeck/knobdeck-companion).
