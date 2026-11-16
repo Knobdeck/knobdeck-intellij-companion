@@ -5,3 +5,7 @@ build/
 .idea/
 *.iml
 .DS_Store
+# Plugin signing keys never belong in the repo (they are GitHub secrets).
+*.pem
+*.crt
+*.key
