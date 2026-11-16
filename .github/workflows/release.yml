@@ -3,7 +3,7 @@
 # plugin and publishes it to JetBrains Marketplace.
 #
 # Marketplace is skipped (with a warning) until its secrets are set; see CONTRIBUTING.md.
-# Re-running for a version that already has a release skips the release and only retries
+# Re-running for a released version skips the GitHub release and only retries
 # Marketplace.
 name: Release
 
