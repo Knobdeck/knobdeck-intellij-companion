@@ -25,8 +25,9 @@ Point `KNOBDECK_INTELLIJ_PLUGIN` / `KNOBDECK_INTELLIJ_SETUP` at a built `intelli
 ## Releasing
 
 1. Bump `pluginVersion` in `gradle.properties` and add an entry at the top of `CHANGELOG.html`
-   (it becomes the Marketplace change notes and the GitHub release notes). Merge to `master`.
-2. **Actions → Release → Run workflow** on `master`.
+   (it becomes the Marketplace change notes and the GitHub release notes). Merge to `master`; that
+   starts the Release workflow, which ships the new version. A push that doesn't bump the version
+   only runs CI. To retry the stores for a released version, use **Actions → Release → Run workflow** on `master`.
 
 The workflow runs CI, creates the tag `v<version>` and a GitHub release with the plugin zip, then
 signs the plugin and publishes it to JetBrains Marketplace. Without the secrets below the
